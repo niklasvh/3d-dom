@@ -2,6 +2,7 @@ function html2canvasDepthRenderer(options) {
   options = options || {};
 
   var depth = 0;
+  var count = 0;
 
   var doc = document,
     safeImages = [],
@@ -32,13 +33,19 @@ function html2canvasDepthRenderer(options) {
     return true;
   }
 
+  function getDepthColor(color) {
+    return "rgb(" + [color, 0, 0].join(",") + ")";
+  }
+
   function renderItem(ctx, item) {
+    count++;
     var color;
+    var tmpStyle;
     switch(item.type){
       case "variable":
         if (item.name === "fillStyle") {
           color = depth;
-          ctx.fillStyle = "rgb(" + [color, 0, 0].join(",") + ")";
+          ctx.fillStyle = getDepthColor(color);
         } else if(!/(shadowColor|shadowOffsetX|shadowOffsetY|shadowBlur|globalAlpha)/.test(item.name)) {
           ctx[item.name] = item['arguments'];
         }
@@ -46,27 +53,16 @@ function html2canvasDepthRenderer(options) {
       case "function":
         switch(item.name) {
           case "createPattern":
-            if (item['arguments'][0].width > 0 && item['arguments'][0].height > 0) {
-              try {
-                ctx.fillStyle = ctx.createPattern(item['arguments'][0], "repeat");
-              }
-              catch(e) {}
-            }
             break;
           case "drawShape":
             createShape(ctx, item['arguments']);
             break;
           case "drawImage":
-            if (item['arguments'][8] > 0 && item['arguments'][7] > 0) {
-              if (!options.taintTest || (options.taintTest && safeImage(item))) {
-                ctx.drawImage.apply( ctx, item['arguments'] );
-              }
-            }
             break;
           case "fillText":
-            var tmpStyle = ctx.fillStyle;
+            tmpStyle = ctx.fillStyle;
             color = (depth + 1);
-            ctx.fillStyle = "rgb(" + [color, 0, 0].join(",") + ")";
+            ctx.fillStyle = getDepthColor(color);
             ctx[item.name].apply(ctx, item['arguments']);
             ctx.fillStyle = tmpStyle;
             break;
@@ -152,6 +148,7 @@ function html2canvasDepthRenderer(options) {
       }
     }
 
+    console.log("Drew", count, "times");
     return canvas;
   };
 };

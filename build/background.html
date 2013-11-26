@@ -1,0 +1,24 @@
+chrome.browserAction.onClicked.addListener(function(tab) {
+    chrome.tabs.executeScript(null, {file: "domfps.js"});
+});
+
+chrome.runtime.onMessage.addListener(
+    function(request, sender, sendResponse) {
+        if (request.message == "convert_image_url_to_data_url"){
+            var canvas = document.createElement("canvas");
+            var img = new Image();
+            img.addEventListener("load", function() {
+                canvas.width = img.width;
+                canvas.height = img.height;
+                canvas.getContext("2d").drawImage(img, 0, 0);
+                console.log(request.url, "loaded");
+                sendResponse({data: canvas.toDataURL()});
+            });
+            img.addEventListener("error", function() {
+                sendResponse("error");
+            });
+            img.src = request.url;
+        }
+        return true;
+    }
+)

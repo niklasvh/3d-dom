@@ -1,0 +1,18 @@
+{
+  "manifest_version": 2,
+
+  "name": "3D Webpages",
+  "description": "View web sites in 3D",
+  "version": "1.0",
+
+  "permissions": [
+    "tabs", "http://*/*", "https://*/*"
+  ],
+  "background": {
+    "scripts": ["background.html"],
+    "persistent": false
+  },
+  "browser_action": {
+    "default_title": "Go 3D"
+  }
+}

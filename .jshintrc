@@ -1,0 +1,14 @@
+{
+    "curly": true,
+    "eqeqeq": true,
+    "immed": true,
+    "latedef": false,
+    "newcap": true,
+    "noarg": true,
+    "sub": true,
+    "undef": true,
+    "boss": true,
+    "eqnull": true,
+    "browser": true,
+    "globals": ["Bacon", "THREE", "requestAnimationFrame", "html2canvas", "html2canvasDepthRenderer", "Terrain", "Player", "isTrue", "setupUpdateStream", "diff"]
+}
